@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>LayoutFix – מדריך התקנה</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Assistant:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: single readable column, keycap motif for the subject (two layouts, same physical keys) */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --fg: #1d2330; --muted: #5d6676;
+  --line: #dde1e8; --accent: #2f5bd3; --accent-soft: #e6ecfb; --warn-bg: #fff6e0; --warn-fg: #6b4a00;
+  --key-top: #ffffff; --key-side: #c9ced8;
+  --display: "Rubik", "Segoe UI", Arial, sans-serif;
+  --body: "Assistant", "Segoe UI", Arial, sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #13161c; --surface: #1b1f27; --fg: #e7eaf0; --muted: #9aa3b2;
+  --line: #2c323d; --accent: #7d9cf0; --accent-soft: #222c44; --warn-bg: #2e2715; --warn-fg: #f0cf7a;
+  --key-top: #272c36; --key-side: #0c0e12; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #13161c; --surface: #1b1f27; --fg: #e7eaf0; --muted: #9aa3b2;
+  --line: #2c323d; --accent: #7d9cf0; --accent-soft: #222c44; --warn-bg: #2e2715; --warn-fg: #f0cf7a;
+  --key-top: #272c36; --key-side: #0c0e12; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.65; }
+.wrap { max-width: 680px; margin: 0 auto; padding-block: 40px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 32px; }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: 2rem; line-height: 1.2; }
+h2 { font-size: 1.25rem; }
+p { margin: 0; }
+.lead { color: var(--muted); font-size: 1.1rem; }
+header { display: flex; flex-direction: column; gap: 12px; }
+.dl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
+.dl span { color: var(--muted); font-size: .95rem; }
+.btn { display: inline-block; background: var(--accent); color: var(--surface); text-decoration: none;
+  font-family: var(--display); font-weight: 700; padding: 12px 22px; border-radius: 10px; }
+.btn:hover { filter: brightness(1.1); }
+.btn:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+footer a { color: var(--muted); }
+
+kbd { font-family: var(--mono); font-size: .85em; background: var(--key-top); border: 1px solid var(--line);
+  border-bottom: 3px solid var(--key-side); border-radius: 6px; padding: 1px 7px; white-space: nowrap; direction: ltr; display: inline-block; }
+code { font-family: var(--mono); font-size: .9em; background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; direction: ltr; unicode-bidi: embed; }
+
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; }
+.keys { display: flex; gap: 6px; direction: ltr; }
+.cap { width: 46px; height: 50px; background: var(--key-top); border: 1px solid var(--line); border-bottom: 4px solid var(--key-side);
+  border-radius: 8px; display: grid; grid-template-rows: 1fr 1fr; place-items: center; font-family: var(--mono); line-height: 1; }
+.cap .en { font-size: .8rem; color: var(--muted); }
+.cap .he { font-size: 1.05rem; font-family: var(--display); font-weight: 700; }
+.arrow { color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+.demo-cap { width: 100%; text-align: center; color: var(--muted); font-size: .95rem; }
+
+ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: s; }
+ol.steps > li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px 18px; display: grid; grid-template-columns: 36px 1fr; gap: 4px 14px; }
+ol.steps > li::before { content: counter(s); grid-row: span 2; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: var(--surface); font-family: var(--display); font-weight: 700; display: grid; place-items: center; }
+ol.steps h3 { margin: 0; font-family: var(--display); font-size: 1.05rem; }
+ol.steps .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.note { background: var(--warn-bg); color: var(--warn-fg); border-radius: 8px; padding: 10px 12px; font-size: .95rem; }
+
+section { display: flex; flex-direction: column; gap: 12px; }
+ul.plain { margin: 0; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+footer { border-top: 1px solid var(--line); padding-top: 18px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .9rem; }
+footer { flex-wrap: wrap; gap: 8px; }
+.sig { font-family: var(--display); font-weight: 700; font-size: 1rem; color: var(--fg); letter-spacing: .02em; }
+</style>
+
+<div class="wrap" dir="rtl" lang="he">
+  <header>
+    <h1>LayoutFix: מתקנים ג׳יבריש בלחיצה</h1>
+    <p class="lead">התחלת להקליד, והמקלדת הייתה על השפה הלא נכונה?<br>מסמנים את הטקסט, לוחצים <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd>, והוא מתוקן.</p>
+    <div class="dl">
+      <a class="btn" href="https://github.com/RonyB-tools/layoutfixByRB/releases/latest/download/LayoutFix-ByRB.zip">הורדה ל-Windows</a>
+      <span>קובץ ZIP קטן · Windows 10/11 · חינם</span>
+    </div>
+  </header>
+
+  <div class="demo" aria-label="דוגמה: akuo הופך לשלום">
+    <div class="keys">
+      <div class="cap"><span class="en">a</span><span class="he">ש</span></div>
+      <div class="cap"><span class="en">k</span><span class="he">ל</span></div>
+      <div class="cap"><span class="en">u</span><span class="he">ו</span></div>
+      <div class="cap"><span class="en">o</span><span class="he">ם</span></div>
+    </div>
+    <p class="demo-cap">אותם מקשים: <code>akuo</code> <span class="arrow">←</span> שלום.<br>זה עובד גם בכיוון ההפוך.</p>
+  </div>
+
+  <section>
+    <h2>התקנה (פעם אחת בכל מחשב)</h2>
+    <ol class="steps">
+      <li><h3>שומרים את התיקייה במקום קבוע</h3>
+        <div class="body"><p>מחלצים את <code>LayoutFix ByRB.zip</code> לתיקייה שלא תימחק, למשל <code>Documents\LayoutFix</code>.<br>בתוכו יש קובץ אחד בלבד: <code>LayoutFix ByRB.exe</code>.<br>לא צריך להתקין שום תוכנה נוספת.</p></div></li>
+      <li><h3>מפעילים</h3>
+        <div class="body"><p>לוחצים פעמיים על <code>LayoutFix ByRB.exe</code>.<br>ליד השעון יופיע סמל כחול עם A ו-א, וזה סימן שהכלי פועל.</p>
+        <p class="note">אם מופיעה האזהרה "Windows protected your PC", לוחצים על <b>More info</b> ואז על <b>Run anyway</b>.<br>האזהרה מופיעה כי הקובץ לא חתום דיגיטלית.<br>היא מופיעה רק בפעם הראשונה.</p></div></li>
+      <li><h3>בודקים</h3>
+        <div class="body"><p>פותחים את Notepad, מקלידים <code>akuo</code>, מסמנים ולוחצים <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd>.<br>אמור להופיע "שלום".</p></div></li>
+      <li><h3>מגדירים הפעלה אוטומטית עם המחשב</h3>
+        <div class="body"><p>לוחצים קליק ימני על הסמל הכחול ליד השעון.<br>בוחרים <b>הפעלה אוטומטית עם Windows</b>, ומופיע לידה סימן ✓.<br>מעכשיו הכלי יעלה לבד בכל הפעלה של המחשב.</p>
+        <p class="note">אם מעבירים את <code>LayoutFix ByRB.exe</code> לתיקייה אחרת, צריך לסמן את האפשרות הזו שוב.</p></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>שימוש יומיומי</h2>
+    <ul class="plain">
+      <li><b>יש טקסט מסומן:</b> כל הטקסט המסומן מומר.</li>
+      <li><b>אין סימון:</b> המילה האחרונה שלפני הסמן מומרת.</li>
+      <li>הכיוון נקבע לבד, מאנגלית לעברית או מעברית לאנגלית, ושפת המקלדת מתחלפת כדי שאפשר יהיה להמשיך להקליד.</li>
+      <li>כדי לעצור את הכלי: לוחצים קליק ימני על הסמל הכחול ליד השעון ובוחרים <b>יציאה</b>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>טיפים</h2>
+    <ul class="plain">
+      <li><b>הסמל לא מופיע ליד השעון?</b><br>לוחצים על החץ הקטן <kbd>^</kbd> ליד השעון, וייתכן שהסמל מוסתר שם.</li>
+      <li><b>לחצת "יציאה" בטעות?</b><br>לוחצים פעמיים על <code>LayoutFix ByRB.exe</code> בתיקייה ששמרת, והכלי חוזר לפעול.</li>
+      <li><b>גישה מהירה:</b><br>לוחצים קליק ימני על הקובץ ובוחרים <b>הצמד לתפריט התחל</b>.<br>מעכשיו מספיק ללחוץ על מקש Windows ולהקליד LayoutFix.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>תנאי שימוש</h2>
+    <p class="lead" style="font-size:1rem">הכלי חינמי, ומותר להשתמש בו ולהעביר אותו לאחרים בחופשיות.<br>הוא ניתן כפי שהוא (AS IS), ללא אחריות מכל סוג.<br>השימוש בו הוא על אחריות המשתמש בלבד.</p>
+  </section>
+
+  <footer>
+    <span>LayoutFix · גרסה 2.0 · נובמבר 2026 · <a href="https://github.com/RonyB-tools/layoutfixByRB">קוד מקור</a></span>
+    <span class="sig" dir="ltr">Created By RonyB with Claude C.</span>
+  </footer>
+</div>
+
+</body>
+</html>
