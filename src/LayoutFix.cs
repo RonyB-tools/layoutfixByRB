@@ -1,4 +1,4 @@
-// LayoutFix — ממיר טקסט שהוקלד בשפת מקלדת שגויה (עברית <-> אנגלית)
+﻿// LayoutFix — ממיר טקסט שהוקלד בשפת מקלדת שגויה (עברית <-> אנגלית)
 // Ctrl+Alt+Space: יש סימון -> ממיר אותו; אין סימון -> ממיר את המילה האחרונה.
 // Created By RonyB with Claude C.
 using System;
@@ -16,8 +16,8 @@ using System.Reflection;
 [assembly: AssemblyDescription("Fixes text typed in the wrong keyboard layout (Hebrew/English). Ctrl+Alt+Space.")]
 [assembly: AssemblyCompany("RonyB")]
 [assembly: AssemblyCopyright("Created By RonyB with Claude C.")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("2.1.0.0")]
+[assembly: AssemblyFileVersion("2.1.0.0")]
 
 static class Program
 {
@@ -76,10 +76,8 @@ class TrayApp : ApplicationContext
         tray.ContextMenuStrip = menu;
         tray.Visible = true;
 
-        if (ok)
-            tray.ShowBalloonTip(3000, "LayoutFix פועל",
-                "מסמנים טקסט ולוחצים Ctrl+Alt+Space כדי להמיר עברית ↔ אנגלית.", ToolTipIcon.Info);
-        else
+        // הודעה רק כשיש בעיה; הפעלה רגילה שקטה
+        if (!ok)
             tray.ShowBalloonTip(6000, "LayoutFix",
                 "הקיצור Ctrl+Alt+Space תפוס על ידי תוכנה אחרת. סגרי אותה והפעילי שוב.", ToolTipIcon.Warning);
     }
