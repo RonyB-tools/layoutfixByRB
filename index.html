@@ -3,146 +3,267 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>body{margin:0}img{max-width:100%}</style>
-</head>
-<body>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>LayoutFix – מדריך התקנה</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Assistant:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<meta name="description" content="מסמנים ג׳יבריש שהוקלד בשפת מקלדת שגויה, לוחצים Ctrl+Alt+Space, והוא מתוקן. כלי חינמי ל-Windows.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&display=swap">
 <style>
-/* Layout: single readable column, keycap motif for the subject (two layouts, same physical keys) */
+/* Concept: an Israeli keyboard. Every key carries two legends (Latin in ink, Hebrew in red).
+   One column, right-aligned; the keycap is the only ornament, used for the demo, the download key and step numbers. */
 :root {
-  --bg: #f6f7f9; --surface: #ffffff; --fg: #1d2330; --muted: #5d6676;
-  --line: #dde1e8; --accent: #2f5bd3; --accent-soft: #e6ecfb; --warn-bg: #fff6e0; --warn-fg: #6b4a00;
-  --key-top: #ffffff; --key-side: #c9ced8;
-  --display: "Rubik", "Segoe UI", Arial, sans-serif;
+  --paper: #e8ecf1;      /* desk under the keyboard */
+  --cap: #fbfcfd;        /* keycap face */
+  --cap-edge: #c2cad5;   /* keycap skirt */
+  --ink: #1c2433;        /* Latin legend / text */
+  --he: #c8323c;         /* Hebrew legend red */
+  --accent: #2f5bd3;     /* the tray icon blue */
+  --muted: #5d6777;
+  --line: #d3d9e1;
+  --on-accent: #ffffff;
+  --display: "Secular One", "Segoe UI", Arial, sans-serif;
   --body: "Assistant", "Segoe UI", Arial, sans-serif;
-  --mono: "JetBrains Mono", Consolas, monospace;
+  --code: Consolas, "Cascadia Mono", monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #13161c; --surface: #1b1f27; --fg: #e7eaf0; --muted: #9aa3b2;
-  --line: #2c323d; --accent: #7d9cf0; --accent-soft: #222c44; --warn-bg: #2e2715; --warn-fg: #f0cf7a;
-  --key-top: #272c36; --key-side: #0c0e12; color-scheme: dark; } }
+  --paper: #151920; --cap: #242a35; --cap-edge: #0c0f14; --ink: #e7ebf1; --he: #ff6f76;
+  --accent: #82a0f2; --muted: #9aa4b3; --line: #2b323d; --on-accent: #10141b; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #13161c; --surface: #1b1f27; --fg: #e7eaf0; --muted: #9aa3b2;
-  --line: #2c323d; --accent: #7d9cf0; --accent-soft: #222c44; --warn-bg: #2e2715; --warn-fg: #f0cf7a;
-  --key-top: #272c36; --key-side: #0c0e12; color-scheme: dark; }
+  --paper: #151920; --cap: #242a35; --cap-edge: #0c0f14; --ink: #e7ebf1; --he: #ff6f76;
+  --accent: #82a0f2; --muted: #9aa4b3; --line: #2b323d; --on-accent: #10141b; color-scheme: dark; }
 
-body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.65; }
-.wrap { max-width: 680px; margin: 0 auto; padding-block: 40px 56px;
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.6; }
+.page { max-width: 760px; margin: 0 auto; padding-block: 48px 64px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: flex; flex-direction: column; gap: 32px; }
-h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; }
-h1 { font-size: 2rem; line-height: 1.2; }
-h2 { font-size: 1.25rem; }
+  display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.08; letter-spacing: -.01em; }
+h2 { font-size: 1.6rem; line-height: 1.2; }
+h3 { font-size: 1.15rem; line-height: 1.3; }
 p { margin: 0; }
-.lead { color: var(--muted); font-size: 1.1rem; }
-header { display: flex; flex-direction: column; gap: 12px; }
-.dl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
-.dl span { color: var(--muted); font-size: .95rem; }
-.btn { display: inline-block; background: var(--accent); color: var(--surface); text-decoration: none;
-  font-family: var(--display); font-weight: 700; padding: 12px 22px; border-radius: 10px; }
-.btn:hover { filter: brightness(1.1); }
-.btn:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
-footer a { color: var(--muted); }
+b { font-weight: 700; }
+a { color: var(--accent); }
+code { font-family: var(--code); font-size: .82em; background: var(--cap); border: 1px solid var(--line);
+  border-radius: 5px; padding: 1px 6px; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
 
-kbd { font-family: var(--mono); font-size: .85em; background: var(--key-top); border: 1px solid var(--line);
-  border-bottom: 3px solid var(--key-side); border-radius: 6px; padding: 1px 7px; white-space: nowrap; direction: ltr; display: inline-block; }
-code { font-family: var(--mono); font-size: .9em; background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; direction: ltr; unicode-bidi: embed; }
+/* ---------- keycaps ---------- */
+.key { display: inline-grid; place-items: center; min-width: 1.9em; padding: 0 .45em; height: 1.75em;
+  background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 3px; border-radius: 6px;
+  font-family: var(--body); font-weight: 700; font-size: .78em; line-height: 1; direction: ltr; vertical-align: .1em; color: var(--ink); }
 
-.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px;
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; }
-.keys { display: flex; gap: 6px; direction: ltr; }
-.cap { width: 46px; height: 50px; background: var(--key-top); border: 1px solid var(--line); border-bottom: 4px solid var(--key-side);
-  border-radius: 8px; display: grid; grid-template-rows: 1fr 1fr; place-items: center; font-family: var(--mono); line-height: 1; }
-.cap .en { font-size: .8rem; color: var(--muted); }
-.cap .he { font-size: 1.05rem; font-family: var(--display); font-weight: 700; }
-.arrow { color: var(--accent); font-weight: 700; font-size: 1.1rem; }
-.demo-cap { width: 100%; text-align: center; color: var(--muted); font-size: .95rem; }
+/* ---------- hero ---------- */
+.hero { display: flex; flex-direction: column; gap: 22px; }
+.hero .lead { font-size: 1.2rem; color: var(--muted); max-width: 34em; }
 
-ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: s; }
-ol.steps > li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-  padding: 16px 18px; display: grid; grid-template-columns: 36px 1fr; gap: 4px 14px; }
-ol.steps > li::before { content: counter(s); grid-row: span 2; width: 32px; height: 32px; border-radius: 50%;
-  background: var(--accent); color: var(--surface); font-family: var(--display); font-weight: 700; display: grid; place-items: center; }
-ol.steps h3 { margin: 0; font-family: var(--display); font-size: 1.05rem; }
-ol.steps .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.note { background: var(--warn-bg); color: var(--warn-fg); border-radius: 8px; padding: 10px 12px; font-size: .95rem; }
+.demo { margin-top: 8px; display: flex; flex-direction: column; gap: 18px; }
+.field { background: var(--cap); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px;
+  font-size: 1.6rem; min-height: 2.2em; display: flex; align-items: center; gap: 2px; }
+.field .txt { font-family: var(--body); font-weight: 600; }
+.field .txt.he { font-family: var(--display); color: var(--he); }
+.field .caret { width: 2px; height: 1.1em; background: var(--accent); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
 
-section { display: flex; flex-direction: column; gap: 12px; }
-ul.plain { margin: 0; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 6px; }
+.board { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: flex-end; direction: ltr; justify-content: flex-end; }
+.board .group { display: flex; gap: 8px; }
+.cap { position: relative; width: 58px; height: 58px; background: var(--cap); border: 1px solid var(--cap-edge);
+  border-bottom-width: 5px; border-radius: 9px; transition: transform .08s, border-bottom-width .08s, background .2s; }
+.cap .lat { position: absolute; top: 6px; left: 9px; font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+.cap .heb { position: absolute; bottom: 5px; right: 9px; font-family: var(--display); font-size: 1.2rem; color: var(--he); }
+.cap.mod { width: auto; min-width: 72px; padding: 0 12px; display: grid; place-items: center; font-weight: 700; font-size: .95rem; }
+.cap.space { min-width: 150px; }
+.cap.down { transform: translateY(3px); border-bottom-width: 2px; }
+.cap.lit { background: color-mix(in srgb, var(--he) 10%, var(--cap)); }
+.demo-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: .95rem; }
+.replay { font: inherit; color: var(--accent); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.replay:focus-visible, .dlkey:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-footer { border-top: 1px solid var(--line); padding-top: 18px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .9rem; }
-footer { flex-wrap: wrap; gap: 8px; }
-.sig { font-family: var(--display); font-weight: 700; font-size: 1rem; color: var(--fg); letter-spacing: .02em; }
+/* ---------- download key ---------- */
+.get { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.dlkey { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; text-decoration: none;
+  background: var(--accent); color: var(--on-accent); border: 1px solid color-mix(in srgb, var(--accent) 70%, #000);
+  border-bottom-width: 6px; border-radius: 12px; padding: 14px 26px 12px; transition: transform .08s, border-bottom-width .08s; }
+.dlkey:hover { filter: brightness(1.07); }
+.dlkey:active { transform: translateY(4px); border-bottom-width: 2px; }
+.dlkey strong { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.1; }
+.dlkey span { font-size: .9rem; opacity: .85; }
+.get .meta { color: var(--muted); font-size: .95rem; }
+
+/* ---------- sections ---------- */
+section { display: flex; flex-direction: column; gap: 20px; }
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 26px; counter-reset: s; }
+ol.steps > li { counter-increment: s; display: grid; grid-template-columns: 46px 1fr; gap: 4px 18px; }
+ol.steps > li::before { content: counter(s); grid-row: span 2; width: 42px; height: 42px; display: grid; place-items: center;
+  background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 4px; border-radius: 8px;
+  font-family: var(--display); font-size: 1.2rem; color: var(--ink); }
+ol.steps .body { min-width: 0; display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
+.note { font-size: .95rem; color: var(--muted); border-inline-start: 2px solid var(--line); padding-inline-start: 14px; }
+
+dl.uses { margin: 0; display: grid; grid-template-columns: minmax(130px, 11em) 1fr; gap: 18px 28px; }
+dl.uses dt { font-family: var(--display); font-size: 1.05rem; line-height: 1.5; }
+dl.uses dd { margin: 0; min-width: 0; }
+
+.word { background: var(--cap); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.word h3 { color: var(--ink); }
+
+.terms { color: var(--muted); font-size: .95rem; }
+
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 24px;
+  color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); padding-top: 20px; }
+footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink); }
+
+@media (max-width: 560px) {
+  body { font-size: 17px; }
+  .page { gap: 44px; padding-block: 32px 48px; }
+  .cap { width: 48px; height: 50px; }
+  .cap.space { min-width: 110px; }
+  .cap.mod { min-width: 58px; font-size: .85rem; }
+  dl.uses { grid-template-columns: 1fr; gap: 4px; }
+  dl.uses dd { margin-bottom: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .field .caret { animation: none; }
+  .cap, .dlkey { transition: none; }
+}
 </style>
+</head>
+<body>
+<div class="page" dir="rtl" lang="he">
 
-<div class="wrap" dir="rtl" lang="he">
-  <header>
-    <h1>LayoutFix: מתקנים ג׳יבריש בלחיצה</h1>
-    <p class="lead">התחלת להקליד, והמקלדת הייתה על השפה הלא נכונה?<br>מסמנים את הטקסט, לוחצים <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd>, והוא מתוקן.</p>
-    <div class="dl">
-      <a class="btn" href="https://github.com/RonyB-tools/layoutfixByRB/releases/latest/download/LayoutFix-ByRB.zip">הורדה ל-Windows</a>
-      <span>קובץ ZIP קטן · Windows 10/11 · חינם</span>
+  <header class="hero">
+    <h1>הקלדת ג׳יבריש?<br>Ctrl+Alt+Space מתקן.</h1>
+    <p class="lead">התחלת להקליד והמקלדת הייתה על השפה הלא נכונה. מסמנים את הטקסט, לוחצים <span class="key">Ctrl</span> <span class="key">Alt</span> <span class="key">Space</span>, והוא חוזר להיות מה שהתכוונת.</p>
+
+    <div class="demo" aria-label="הדגמה: akuo הופך לשלום">
+      <div class="field" id="field" dir="ltr"><span class="txt" id="txt">akuo</span><span class="caret" aria-hidden="true"></span></div>
+      <div class="board" aria-hidden="true">
+        <div class="group">
+          <div class="cap mod" data-k="ctrl">Ctrl</div>
+          <div class="cap mod" data-k="alt">Alt</div>
+          <div class="cap mod space" data-k="space">Space</div>
+        </div>
+        <div class="group">
+          <div class="cap" data-k="a"><span class="lat">A</span><span class="heb">ש</span></div>
+          <div class="cap" data-k="k"><span class="lat">K</span><span class="heb">ל</span></div>
+          <div class="cap" data-k="u"><span class="lat">U</span><span class="heb">ו</span></div>
+          <div class="cap" data-k="o"><span class="lat">O</span><span class="heb">ם</span></div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        <span>אותם ארבעה מקשים. זה עובד גם מעברית לאנגלית.</span>
+        <button class="replay" id="replay" type="button">להריץ שוב</button>
+      </div>
     </div>
   </header>
 
-  <div class="demo" aria-label="דוגמה: akuo הופך לשלום">
-    <div class="keys">
-      <div class="cap"><span class="en">a</span><span class="he">ש</span></div>
-      <div class="cap"><span class="en">k</span><span class="he">ל</span></div>
-      <div class="cap"><span class="en">u</span><span class="he">ו</span></div>
-      <div class="cap"><span class="en">o</span><span class="he">ם</span></div>
-    </div>
-    <p class="demo-cap">אותם מקשים: <code>akuo</code> <span class="arrow">←</span> שלום.<br>זה עובד גם בכיוון ההפוך.</p>
+  <div class="get">
+    <a class="dlkey" href="https://github.com/RonyB-tools/layoutfixByRB/releases/latest/download/LayoutFix-ByRB.zip">
+      <strong>הורדה ל-Windows</strong>
+      <span>קובץ ZIP, פחות מ-10KB</span>
+    </a>
+    <p class="meta">Windows 10 ו-11. חינם, בלי התקנה ובלי תוכנות נוספות.</p>
   </div>
 
   <section>
-    <h2>התקנה (פעם אחת בכל מחשב)</h2>
+    <h2>התקנה, פעם אחת בכל מחשב</h2>
     <ol class="steps">
-      <li><h3>שומרים את התיקייה במקום קבוע</h3>
-        <div class="body"><p>מחלצים את <code>LayoutFix ByRB.zip</code> לתיקייה שלא תימחק, למשל <code>Documents\LayoutFix</code>.<br>בתוכו יש קובץ אחד בלבד: <code>LayoutFix ByRB.exe</code>.<br>לא צריך להתקין שום תוכנה נוספת.</p></div></li>
+      <li><h3>שומרים במקום קבוע</h3>
+        <div class="body"><p>מחלצים את <code>LayoutFix-ByRB.zip</code> לתיקייה שלא תימחק, למשל <code>Documents\LayoutFix</code>.<br>בפנים יש קובץ אחד: <code>LayoutFix ByRB.exe</code>.</p></div></li>
       <li><h3>מפעילים</h3>
-        <div class="body"><p>לוחצים פעמיים על <code>LayoutFix ByRB.exe</code>.<br>ליד השעון יופיע סמל כחול עם A ו-א, וזה סימן שהכלי פועל.</p>
-        <p class="note">אם מופיעה האזהרה "Windows protected your PC", לוחצים על <b>More info</b> ואז על <b>Run anyway</b>.<br>האזהרה מופיעה כי הקובץ לא חתום דיגיטלית.<br>היא מופיעה רק בפעם הראשונה.</p></div></li>
+        <div class="body"><p>לוחצים פעמיים על <code>LayoutFix ByRB.exe</code>.<br>ליד השעון מופיע סמל כחול עם A ו-א. זה סימן שהכלי פועל.</p>
+        <p class="note">אם מופיעה האזהרה <span dir="ltr">"Windows protected your PC"</span>, לוחצים <b>More info</b> ואז <b>Run anyway</b>.<br>היא מופיעה כי הקובץ לא חתום דיגיטלית, ורק בפעם הראשונה.</p></div></li>
       <li><h3>בודקים</h3>
-        <div class="body"><p>פותחים את Notepad, מקלידים <code>akuo</code>, מסמנים ולוחצים <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd>.<br>אמור להופיע "שלום".</p></div></li>
-      <li><h3>מגדירים הפעלה אוטומטית עם המחשב</h3>
-        <div class="body"><p>לוחצים קליק ימני על הסמל הכחול ליד השעון.<br>בוחרים <b>הפעלה אוטומטית עם Windows</b>, ומופיע לידה סימן ✓.<br>מעכשיו הכלי יעלה לבד בכל הפעלה של המחשב.</p>
-        <p class="note">אם מעבירים את <code>LayoutFix ByRB.exe</code> לתיקייה אחרת, צריך לסמן את האפשרות הזו שוב.</p></div></li>
+        <div class="body"><p>ב-Notepad מקלידים <code>akuo</code>, מסמנים ולוחצים <span class="key">Ctrl</span> <span class="key">Alt</span> <span class="key">Space</span>.<br>אמור להופיע "שלום".</p></div></li>
+      <li><h3>מגדירים הפעלה עם המחשב</h3>
+        <div class="body"><p>קליק ימני על הסמל ליד השעון, ובוחרים <b>הפעלה אוטומטית עם Windows</b>.<br>מעכשיו הכלי עולה לבד בכל הדלקה.</p>
+        <p class="note">אם מעבירים את הקובץ לתיקייה אחרת, מסמנים את האפשרות הזו שוב.</p></div></li>
     </ol>
   </section>
 
+  <hr class="rule">
+
   <section>
-    <h2>שימוש יומיומי</h2>
-    <ul class="plain">
-      <li><b>יש טקסט מסומן:</b> כל הטקסט המסומן מומר.</li>
-      <li><b>אין סימון:</b> המילה האחרונה שלפני הסמן מומרת, עד הרווח הקרוב.<br>זה עובד גם בתוכנות בעברית, כמו WhatsApp ו-Gmail.</li>
-      <li>הכיוון נקבע לבד, מאנגלית לעברית או מעברית לאנגלית, ושפת המקלדת מתחלפת כדי שאפשר יהיה להמשיך להקליד.</li>
-      <li><b>השהיה:</b> לוחצים קליק ימני על הסמל ליד השעון ובוחרים <b>השהיה</b>.<br>הסמל הופך לאפור, ו-Ctrl+Alt+Space משתחרר לשימוש אחר.<br>כדי לחזור: קליק ימני ובוחרים <b>הפעלה</b>.</li>
-      <li><b>למשתמשי Word בלבד:</b><br>ב-Word הצירוף Ctrl+Alt+Space מפעיל <b>הקראה בקול</b>.<br>כש-LayoutFix פעיל, הצירוף ממיר טקסט ולא מקריא.<br>כדי להקריא בקול, משהים את LayoutFix, או בוחרים ב-Word: <b>סקירה ← הקראה בקול</b>.</li>
-    </ul>
+    <h2>בשימוש</h2>
+    <dl class="uses">
+      <dt>יש טקסט מסומן</dt>
+      <dd>כל הטקסט המסומן מומר.</dd>
+      <dt>אין סימון</dt>
+      <dd>המילה האחרונה שלפני הסמן מומרת, עד הרווח הקרוב.<br>זה עובד גם בתוכנות בעברית, כמו WhatsApp ו-Gmail.</dd>
+      <dt>הכיוון</dt>
+      <dd>נקבע לבד: מאנגלית לעברית או מעברית לאנגלית.<br>שפת המקלדת מתחלפת, כדי שאפשר יהיה להמשיך להקליד.</dd>
+      <dt>השהיה</dt>
+      <dd>קליק ימני על הסמל ובוחרים <b>השהיה</b>. הסמל הופך לאפור, והצירוף משתחרר לשימוש אחר.<br>כדי לחזור: קליק ימני ובוחרים <b>הפעלה</b>.</dd>
+    </dl>
+
+    <div class="word">
+      <h3>למשתמשי Word בלבד</h3>
+      <p>ב-Word הצירוף <span class="key">Ctrl</span> <span class="key">Alt</span> <span class="key">Space</span> מפעיל <b>הקראה בקול</b>.<br>כש-LayoutFix פעיל, הצירוף ממיר טקסט ולא מקריא.<br>כדי להקריא בקול, משהים את LayoutFix, או בוחרים ב-Word: <b>סקירה ← הקראה בקול</b>.</p>
+    </div>
   </section>
+
+  <hr class="rule">
 
   <section>
     <h2>טיפים</h2>
-    <ul class="plain">
-      <li><b>הסמל לא מופיע ליד השעון?</b><br>לוחצים על החץ הקטן <kbd>^</kbd> ליד השעון, וייתכן שהסמל מוסתר שם.</li>
-      <li><b>עדכון לגרסה חדשה:</b><br>מורידים את הגרסה החדשה ולוחצים עליה פעמיים.<br>היא סוגרת לבד את הגרסה הקודמת ונכנסת במקומה.</li>
-      <li><b>גישה מהירה:</b><br>לוחצים קליק ימני על הקובץ ובוחרים <b>הצמד לתפריט התחל</b>.<br>מעכשיו מספיק ללחוץ על מקש Windows ולהקליד LayoutFix.</li>
-    </ul>
+    <dl class="uses">
+      <dt>הסמל לא נראה</dt>
+      <dd>לוחצים על החץ הקטן <span class="key">^</span> ליד השעון. ייתכן שהסמל מוסתר שם.</dd>
+      <dt>עדכון לגרסה חדשה</dt>
+      <dd>מורידים ולוחצים פעמיים על הגרסה החדשה.<br>היא סוגרת לבד את הקודמת ונכנסת במקומה.</dd>
+      <dt>גישה מהירה</dt>
+      <dd>קליק ימני על הקובץ ובוחרים <b>הצמד לתפריט התחל</b>.</dd>
+    </dl>
   </section>
 
-  <section>
-    <h2>תנאי שימוש</h2>
-    <p class="lead" style="font-size:1rem">הכלי חינמי, ומותר להשתמש בו ולהעביר אותו לאחרים בחופשיות.<br>הוא ניתן כפי שהוא (AS IS), ללא אחריות מכל סוג.<br>השימוש בו הוא על אחריות המשתמש בלבד.</p>
+  <section class="terms">
+    <h2 style="font-size:1.15rem;color:var(--ink)">תנאי שימוש</h2>
+    <p>הכלי חינמי, ומותר להשתמש בו ולהעביר אותו לאחרים בחופשיות.<br>הוא ניתן כפי שהוא (AS IS), ללא אחריות מכל סוג. השימוש על אחריות המשתמש בלבד.</p>
   </section>
 
   <footer>
-    <span>LayoutFix · גרסה 2.2 · נובמבר 2026 · <a href="https://github.com/RonyB-tools/layoutfixByRB">קוד מקור</a></span>
+    <span>גרסה 2.2, נובמבר 2026. <a href="https://github.com/RonyB-tools/layoutfixByRB">קוד מקור ב-GitHub</a></span>
     <span class="sig" dir="ltr">Created By RonyB with Claude C.</span>
   </footer>
 </div>
 
+<script>
+(function () {
+  var field = document.getElementById('field');
+  var txt = document.getElementById('txt');
+  var replay = document.getElementById('replay');
+  var caps = {};
+  document.querySelectorAll('.cap[data-k]').forEach(function (c) { caps[c.dataset.k] = c; });
+  var timers = [];
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function press(k, hold) { caps[k].classList.add('down'); if (!hold) at(140, function () { caps[k].classList.remove('down'); }); }
+  function clear() {
+    timers.forEach(clearTimeout); timers = [];
+    Object.keys(caps).forEach(function (k) { caps[k].classList.remove('down', 'lit'); });
+  }
+  function done() {
+    field.dir = 'rtl'; txt.textContent = 'שלום'; txt.classList.add('he');
+    ['a', 'k', 'u', 'o'].forEach(function (k) { caps[k].classList.add('lit'); });
+  }
+  function run() {
+    clear();
+    if (reduce) { done(); return; }
+    field.dir = 'ltr'; txt.classList.remove('he'); txt.textContent = '';
+    var word = 'akuo', t = 400;
+    word.split('').forEach(function (ch) {
+      at(t, function () { press(ch); txt.textContent += ch; }); t += 260;
+    });
+    t += 700;
+    at(t, function () { press('ctrl', true); });
+    at(t + 120, function () { press('alt', true); });
+    at(t + 260, function () { press('space', true); });
+    at(t + 520, function () { ['ctrl', 'alt', 'space'].forEach(function (k) { caps[k].classList.remove('down'); }); done(); });
+  }
+  replay.addEventListener('click', run);
+  run();
+})();
+</script>
 </body>
 </html>
