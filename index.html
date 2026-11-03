@@ -32,7 +32,7 @@
   --paper: #151920; --cap: #242a35; --cap-edge: #0c0f14; --ink: #e7ebf1; --he: #ff6f76;
   --accent: #82a0f2; --muted: #9aa4b3; --line: #2b323d; --on-accent: #10141b; color-scheme: dark; }
 
-body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.6; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.45; }
 .page { max-width: 760px; margin: 0 auto; padding-block: 28px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
   display: flex; flex-direction: column; gap: 30px; }
@@ -78,7 +78,7 @@ code { font-family: var(--code); font-size: .82em; background: var(--cap); borde
 .replay:focus-visible, .dlkey:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
 /* ---------- download key ---------- */
-.get { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.get { display: flex; justify-content: center; }
 .dlkey { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; text-decoration: none;
   background: var(--accent); color: var(--on-accent); border: 1px solid color-mix(in srgb, var(--accent) 70%, #000);
   border-bottom-width: 6px; border-radius: 12px; padding: 14px 26px 12px; transition: transform .08s, border-bottom-width .08s; }
@@ -125,7 +125,11 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
 .tray .clock { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: .78rem; font-weight: 400; }
 .tray .here { outline: 2px solid #ffd34d; outline-offset: 4px; border-radius: 3px; }
 
-.notes { display: flex; flex-direction: column; gap: 6px; }
+.notes { margin: 0; padding-inline-start: 20px; display: flex; flex-direction: column; gap: 6px; font-size: .95rem; color: var(--muted); }
+.notes li::marker { color: var(--accent); }
+.notes b { color: var(--ink); }
+ul.uses-line { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+ul.uses-line b { font-family: var(--display); font-weight: 400; }
 
 /* ---------- in use: before / after examples ---------- */
 .uses-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -150,7 +154,7 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
   .cap.space { min-width: 0; flex: 1; }
   .field { font-size: 1.25rem; }
   .cap.mod { min-width: 58px; font-size: .85rem; }
-  .uses-grid { grid-template-columns: 1fr; }
+  ul.uses-line { font-size: .86rem; }
   dl.uses { grid-template-columns: 1fr; gap: 4px; }
   dl.uses dd { margin-bottom: 8px; }
 }
@@ -187,17 +191,15 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
       <strong>הורדה ל-Windows</strong>
       <span>קובץ ZIP, פחות מ-10KB</span>
     </a>
-    <p class="meta">Windows 10 ו-11. חינם, בלי התקנה ובלי תוכנות נוספות.</p>
-    <p class="update">כבר מותקנת גרסה קודמת? מורידים ומפעילים את החדשה, והיא מחליפה את הקודמת לבד.</p>
   </div>
 
   <section>
-    <h2>התקנה, פעם אחת בכל מחשב</h2>
+    <h2>התקנה (פעם אחת בכל מחשב) והפעלה</h2>
     <ol class="steps">
-      <li><h3>שומרים במקום קבוע</h3>
+      <li><h3>שומרים במקום בטוח</h3>
         <div class="body"><p>מחלצים את <code>LayoutFix-ByRB.zip</code> לתיקייה מוגנת, למשל <code>Documents\LayoutFix</code>.</p></div></li>
 
-      <li><h3>מפעילים</h3>
+      <li><h3>הפעלה ראשונית ושימוש שוטף</h3>
         <div class="body"><p>לוחצים פעמיים על <code>LayoutFix ByRB.exe</code>.<br>ליד השעון מופיע הסמל הכחול <span class="ticon" role="img" aria-label="סמל LayoutFix"></span>, וזה סימן שהכלי פועל.</p>
           <div class="tray" aria-hidden="true">
             <span class="chev">^</span>
@@ -205,35 +207,22 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
             <span>ENG</span>
             <span class="clock"><span>15:30</span><span>03/11/2026</span></span>
           </div>
-          <div class="notes">
-            <p class="note">אם מופיעה האזהרה <span dir="ltr">"Windows protected your PC"</span>, לוחצים <b>More info</b> ואז <b>Run anyway</b>.<br>היא מופיעה כי הקובץ לא חתום דיגיטלית, ורק בפעם הראשונה.</p>
-            <p class="note"><b>הסמל לא נראה?</b><br>לוחצים על החץ הקטן <span class="key">^</span> ליד השעון, וייתכן שהוא מוסתר שם.</p>
-            <p class="note"><b>גישה מהירה:</b><br>קליק ימני על הקובץ ובוחרים <b>הצמד לתפריט התחל</b>.</p>
-          </div></div></li>
-
-      <li><h3>בודקים</h3>
-        <div class="body"><p>ב-Notepad מקלידים <code>akuo</code>, מסמנים ולוחצים <span class="key">Ctrl</span> <span class="key">Alt</span> <span class="key">Space</span>.<br>אמור להופיע "שלום".</p></div></li>
-
-      <li><h3>מגדירים הפעלה עם המחשב</h3>
-        <div class="body"><p>קליק ימני על הסמל <span class="ticon" role="img" aria-label="סמל LayoutFix"></span>, ובוחרים <b>הפעלה אוטומטית עם Windows</b>.<br>מעכשיו הכלי עולה לבד בכל הדלקה.</p>
-          <div class="notes">
-            <p class="note">אם מעבירים את הקובץ לתיקייה אחרת, מסמנים את האפשרות הזו שוב.</p>
-            <p class="note"><b>השהיה והחזרה:</b><br>קליק ימני על הסמל ובוחרים <b>השהיה</b>. הסמל הופך לאפור <span class="ticon off" role="img" aria-label="סמל מושהה"></span>, והצירוף משתחרר לשימוש אחר.<br>כדי לחזור: קליק ימני ובוחרים <b>הפעלה</b>.</p>
-          </div></div></li>
+          <ul class="notes">
+            <li><b>גישה מהירה:</b> היא לא נוצרת לבד. קליק ימני על הקובץ ובוחרים <b>הצמד לתפריט התחל</b>.</li>
+            <li><b>אם מופיעה אזהרה</b> <span dir="ltr">"Windows protected your PC"</span>: לוחצים <b>More info</b> ואז <b>Run anyway</b>. זה קורה רק בפעם הראשונה, כי הקובץ לא חתום דיגיטלית.</li>
+            <li><b>הפעלה אוטומטית והשהיה:</b> קליק ימני על הסמל.<br><b>הפעלה אוטומטית עם Windows</b>: הכלי עולה לבד בכל הדלקה.<br><b>השהיה</b>: הסמל הופך לאפור <span class="ticon off" role="img" aria-label="סמל מושהה"></span> והצירוף משתחרר. <b>הפעלה</b> מחזירה אותו.</li>
+            <li><b>הסמל לא נראה?</b> לוחצים על החץ <span class="key">^</span> ליד השעון. ייתכן שהוא מוסתר שם.</li>
+          </ul></div></li>
     </ol>
   </section>
 
   <section>
     <h2>בשימוש</h2>
-    <dl class="uses">
-      <dt>טקסט מסומן</dt>
-      <dd>כל הטקסט המסומן מומר לשפה השנייה.</dd>
-      <dt>בלי סימון</dt>
-      <dd>מומרת רק המילה האחרונה שלפני הסמן.</dd>
-      <dt>כיווניות</dt>
-      <dd>נקבעת לבד, ושפת המקלדת מתחלפת בהתאם.</dd>
-    </dl>
-
+    <ul class="uses-line">
+      <li><b>טקסט מסומן</b> ← כל הטקסט המסומן מומר לשפה השנייה</li>
+      <li><b>טקסט לא מסומן</b> ← מומרת המילה האחרונה שלפני הסמן</li>
+      <li><b>כיווניות</b> ← נקבעת אוטומטית, ושפת המקלדת מוחלפת בהתאם</li>
+    </ul>
     <div class="word">
       <h3>הערה לעבודה ב-Word</h3>
       <p>יש לקחת בחשבון שב-Word הצירוף <span class="key">Ctrl</span> <span class="key">Alt</span> <span class="key">Space</span> מפעיל <b>הקראה בקול</b>.<br>כש-LayoutFix פעיל, הצירוף ממיר טקסט ולא מקריא.<br>כדי להקריא בקול, משהים את LayoutFix, או בוחרים ב-Word: <b>סקירה ← הקראה בקול</b>.</p>
