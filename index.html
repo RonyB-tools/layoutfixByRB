@@ -55,17 +55,17 @@ code { font-family: var(--code); font-size: .82em; background: var(--cap); borde
 .hero { display: flex; flex-direction: column; gap: 14px; }
 .hero .lead { font-size: 1.2rem; color: var(--muted); max-width: 34em; }
 
-.demo { display: flex; flex-direction: column; gap: 10px; }
-.field { background: var(--cap); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px;
-  font-size: 1.6rem; min-height: 2.2em; display: flex; align-items: center; gap: 2px; }
+.demo { display: flex; flex-direction: column; gap: 6px; }
+.field { background: var(--cap); border: 1px solid var(--line); border-radius: 10px; padding: 8px 16px;
+  font-size: 1.6rem; min-height: 1.7em; display: flex; align-items: center; gap: 2px; }
 .field .txt { font-family: var(--body); font-weight: 600; }
 .field .txt.he { font-family: var(--display); color: var(--he); }
 .field .caret { width: 2px; height: 1.1em; background: var(--accent); animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 
-.board { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: flex-end; direction: ltr; justify-content: flex-end; }
+.board { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: flex-end; direction: ltr; justify-content: flex-end; }
 .board .group { display: flex; gap: 8px; }
-.cap { position: relative; width: 58px; height: 58px; background: var(--cap); border: 1px solid var(--cap-edge);
+.cap { position: relative; width: 58px; height: 44px; background: var(--cap); border: 1px solid var(--cap-edge);
   border-bottom-width: 5px; border-radius: 9px; transition: transform .08s, border-bottom-width .08s, background .2s; }
 .cap .lat { position: absolute; top: 6px; left: 9px; font-weight: 700; font-size: 1.05rem; color: var(--ink); }
 .cap .heb { position: absolute; bottom: 5px; right: 9px; font-family: var(--display); font-size: 1.2rem; color: var(--he); }
@@ -81,11 +81,11 @@ code { font-family: var(--code); font-size: .82em; background: var(--cap); borde
 .get { display: flex; justify-content: center; }
 .dlkey { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; text-decoration: none;
   background: var(--accent); color: var(--on-accent); border: 1px solid color-mix(in srgb, var(--accent) 70%, #000);
-  border-bottom-width: 6px; border-radius: 12px; padding: 14px 26px 12px; transition: transform .08s, border-bottom-width .08s; }
+  border-bottom-width: 4px; border-radius: 10px; padding: 8px 20px 7px; transition: transform .08s, border-bottom-width .08s; }
 .dlkey:hover { filter: brightness(1.07); }
 .dlkey:active { transform: translateY(4px); border-bottom-width: 2px; }
-.dlkey strong { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.1; }
-.dlkey span { font-size: .9rem; opacity: .85; }
+.dlkey strong { font-family: var(--display); font-weight: 400; font-size: 1.15rem; line-height: 1.1; }
+.dlkey span { font-size: .8rem; opacity: .85; }
 .get .meta { color: var(--muted); font-size: .95rem; }
 
 /* ---------- sections ---------- */
@@ -149,7 +149,8 @@ ul.uses-line b { font-family: var(--display); font-weight: 400; }
 @media (max-width: 560px) {
   body { font-size: 17px; }
   .page { gap: 24px; padding-block: 20px 32px; }
-  .cap { width: 48px; height: 50px; }
+  .cap { width: 48px; height: 38px; }
+  h2 { font-size: 1.3rem; }
   .board .group { width: 100%; }
   .cap.space { min-width: 0; flex: 1; }
   .field { font-size: 1.25rem; }
@@ -194,7 +195,7 @@ ul.uses-line b { font-family: var(--display); font-weight: 400; }
   </div>
 
   <section>
-    <h2>התקנה (פעם אחת בכל מחשב) והפעלה</h2>
+    <h2><span style="white-space:nowrap">התקנה (פעם אחת בכל מחשב)</span><br>והפעלה</h2>
     <ol class="steps">
       <li><h3>שומרים במקום בטוח</h3>
         <div class="body"><p>מחלצים את <code>LayoutFix-ByRB.zip</code> לתיקייה מוגנת, למשל <code>Documents\LayoutFix</code>.</p></div></li>
