@@ -70,7 +70,7 @@ code { font-family: var(--code); font-size: .82em; background: var(--cap); borde
 .cap .lat { position: absolute; top: 6px; left: 9px; font-weight: 700; font-size: 1.05rem; color: var(--ink); }
 .cap .heb { position: absolute; bottom: 5px; right: 9px; font-family: var(--display); font-size: 1.2rem; color: var(--he); }
 .cap.mod { width: auto; min-width: 72px; padding: 0 12px; display: grid; place-items: center; font-weight: 700; font-size: .95rem; }
-.cap.space { min-width: 150px; }
+.cap.space { min-width: 360px; }
 .cap.down { transform: translateY(3px); border-bottom-width: 2px; }
 .cap.lit { background: color-mix(in srgb, var(--he) 10%, var(--cap)); }
 .demo-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: .95rem; }
@@ -146,7 +146,9 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
   body { font-size: 17px; }
   .page { gap: 44px; padding-block: 32px 48px; }
   .cap { width: 48px; height: 50px; }
-  .cap.space { min-width: 110px; }
+  .board .group { width: 100%; }
+  .cap.space { min-width: 0; flex: 1; }
+  .field { font-size: 1.25rem; }
   .cap.mod { min-width: 58px; font-size: .85rem; }
   .uses-grid { grid-template-columns: 1fr; }
   dl.uses { grid-template-columns: 1fr; gap: 4px; }
@@ -164,19 +166,13 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
   <header class="hero">
     <h1>ג׳יברשת? לא נורא<br>Ctrl+Alt+Space יתקן</h1>
 
-    <div class="demo" aria-label="הדגמה: akuo הופך לשלום">
-      <div class="field" id="field" dir="ltr"><span class="txt" id="txt">akuo</span><span class="caret" aria-hidden="true"></span></div>
+    <div class="demo" aria-label="הדגמה: thzv ndbhc zv gucs! הופך לאיזה מגניב זה עובד!">
+      <div class="field" id="field" dir="ltr"><span class="txt" id="txt">thzv ndbhc zv gucs!</span><span class="caret" aria-hidden="true"></span></div>
       <div class="board" aria-hidden="true">
         <div class="group">
           <div class="cap mod" data-k="ctrl">Ctrl</div>
           <div class="cap mod" data-k="alt">Alt</div>
           <div class="cap mod space" data-k="space">Space</div>
-        </div>
-        <div class="group">
-          <div class="cap" data-k="a"><span class="lat">A</span><span class="heb">ש</span></div>
-          <div class="cap" data-k="k"><span class="lat">K</span><span class="heb">ל</span></div>
-          <div class="cap" data-k="u"><span class="lat">U</span><span class="heb">ו</span></div>
-          <div class="cap" data-k="o"><span class="lat">O</span><span class="heb">ם</span></div>
         </div>
       </div>
       <div class="demo-foot">
@@ -296,17 +292,20 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
     timers.forEach(clearTimeout); timers = [];
     Object.keys(caps).forEach(function (k) { caps[k].classList.remove('down', 'lit'); });
   }
+  // the same keys as "איזה מגניב זה עובד!" on a Hebrew keyboard
+  var GIBBERISH = 'thzv ndbhc zv gucs!';
+  var MEANT = 'איזה מגניב זה עובד!';
   function done() {
-    field.dir = 'rtl'; txt.textContent = 'שלום'; txt.classList.add('he');
-    ['a', 'k', 'u', 'o'].forEach(function (k) { caps[k].classList.add('lit'); });
+    field.dir = 'rtl'; txt.textContent = MEANT; txt.classList.add('he');
   }
   function run() {
     clear();
     if (reduce) { done(); return; }
     field.dir = 'ltr'; txt.classList.remove('he'); txt.textContent = '';
-    var word = 'akuo', t = 400;
-    word.split('').forEach(function (ch) {
-      at(t, function () { press(ch); txt.textContent += ch; }); t += 260;
+    var t = 400;
+    GIBBERISH.split('').forEach(function (ch) {
+      at(t, function () { if (ch === ' ') press('space'); txt.textContent += ch; });
+      t += ch === ' ' ? 200 : 110 + Math.round(Math.random() * 70);
     });
     t += 700;
     at(t, function () { press('ctrl', true); });
