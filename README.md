@@ -1,5 +1,7 @@
 # LayoutFix ByRB
 
+[![Downloads](https://img.shields.io/github/downloads/RonyB-tools/layoutfixByRB/total)](https://github.com/RonyB-tools/layoutfixByRB/releases)
+
 Typed a sentence with the keyboard on the wrong language? Select it and press **Ctrl+Alt+Space**.
 `akuo` becomes `שלום`, and `יקךךם` becomes `hello`.
 
