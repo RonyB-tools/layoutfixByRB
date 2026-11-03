@@ -220,35 +220,14 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
 
   <section>
     <h2>בשימוש</h2>
-    <div class="uses-grid">
-      <div class="use">
-        <h3>טקסט מסומן</h3>
-        <div class="ba" aria-hidden="true">
-          <div class="row" dir="ltr"><span class="sel">ehv nv,</span></div>
-          <span class="arrow">אחרי Ctrl+Alt+Space</span>
-          <div class="row" dir="rtl"><span class="he">קיה מהת</span></div>
-        </div>
-        <p>כל הטקסט שסימנת מומר לשפה השנייה ומודבק במקומו.<br>שפת המקלדת עוברת לשפה הנכונה, וממשיכים להקליד.</p>
-      </div>
-      <div class="use">
-        <h3>טקסט לא מסומן</h3>
-        <div class="ba" aria-hidden="true">
-          <div class="row" dir="rtl">שלום <span dir="ltr">t,h</span><span class="car"></span></div>
-          <span class="arrow">אחרי Ctrl+Alt+Space</span>
-          <div class="row" dir="rtl">שלום <span class="he">אתי</span><span class="car"></span></div>
-        </div>
-        <p>רק המילה האחרונה שלפני הסמן, עד הרווח הקרוב, מומרת ומוחלפת.<br>שאר השורה נשאר כמו שהוא. זה עובד גם ב-WhatsApp וב-Gmail.</p>
-      </div>
-      <div class="use">
-        <h3>כיווניות</h3>
-        <div class="ba" aria-hidden="true">
-          <div class="row" dir="ltr">akuo → <span class="he">שלום</span></div>
-          <span class="arrow">ולהיפך</span>
-          <div class="row" dir="ltr"><bdi>יקךךם</bdi> → <span class="he" style="font-family:var(--body);font-weight:600">hello</span></div>
-        </div>
-        <p>נקבעת לבד: מאנגלית לעברית או מעברית לאנגלית.<br>שפת המקלדת מתחלפת, כדי שאפשר יהיה להמשיך להקליד.</p>
-      </div>
-    </div>
+    <dl class="uses">
+      <dt>טקסט מסומן</dt>
+      <dd>כל הטקסט המסומן מומר לשפה השנייה.</dd>
+      <dt>בלי סימון</dt>
+      <dd>מומרת רק המילה האחרונה שלפני הסמן.</dd>
+      <dt>כיווניות</dt>
+      <dd>נקבעת לבד, ושפת המקלדת מתחלפת בהתאם.</dd>
+    </dl>
 
     <div class="word">
       <h3>הערה לעבודה ב-Word</h3>
