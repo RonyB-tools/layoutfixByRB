@@ -18,6 +18,27 @@ static class Converter
         return heb < lat;
     }
 
+    // מפצל טקסט ל: מה שלפני המילה האחרונה / המילה האחרונה / רווחים בסוף.
+    // "מילה" = רצף תווים שאינם רווח, כולל , . ; ' (שהם אותיות בפריסה העברית)
+    public static void SplitLastWord(string text, out string before, out string word, out string after)
+    {
+        int end = text.Length;
+        while (end > 0 && char.IsWhiteSpace(text[end - 1])) end--;
+        int start = end;
+        while (start > 0 && !char.IsWhiteSpace(text[start - 1])) start--;
+        before = text.Substring(0, start);
+        word = text.Substring(start, end - start);
+        after = text.Substring(end);
+    }
+
+    // האם יש במילה לפחות תו אחד שיש לו מקבילה בפריסה השנייה
+    public static bool CanConvert(string word)
+    {
+        foreach (char c in word)
+            if (En.IndexOf(char.ToLowerInvariant(c)) >= 0 || He.IndexOf(c) >= 0) return true;
+        return false;
+    }
+
     public static string Convert(string text, bool toHebrew)
     {
         var sb = new StringBuilder(text.Length);

@@ -16,27 +16,44 @@ using System.Reflection;
 [assembly: AssemblyDescription("Fixes text typed in the wrong keyboard layout (Hebrew/English). Ctrl+Alt+Space.")]
 [assembly: AssemblyCompany("RonyB")]
 [assembly: AssemblyCopyright("Created By RonyB with Claude C.")]
-[assembly: AssemblyVersion("2.1.0.0")]
-[assembly: AssemblyFileVersion("2.1.0.0")]
+[assembly: AssemblyVersion("2.2.0.0")]
+[assembly: AssemblyFileVersion("2.2.0.0")]
 
 static class Program
 {
+    public const string QuitEventName = "LayoutFix.Quit.RB";
+
     [STAThread]
     static void Main()
     {
         bool created;
-        using (var mutex = new Mutex(true, "LayoutFix.SingleInstance.RB", out created))
+        var mutex = new Mutex(true, "LayoutFix.SingleInstance.RB", out created);
+        if (!created)
         {
-            if (!created)
+            // עותק אחר כבר פועל (למשל גרסה ישנה): מבקשים ממנו להיסגר ונכנסים במקומו
+            using (var quit = new EventWaitHandle(false, EventResetMode.AutoReset, QuitEventName))
+                quit.Set();
+            bool acquired = WaitForMutex(mutex, 3000);
+            if (!acquired)
             {
-                MessageBox.Show("LayoutFix כבר פועל (הסמל נמצא ליד השעון).", "LayoutFix",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
-                return;
+                // גרסאות ישנות (2.1 ומטה) לא מכירות את הבקשה — סוגרים אותן ישירות
+                var me = Process.GetCurrentProcess();
+                foreach (var p in Process.GetProcessesByName(me.ProcessName))
+                    if (p.Id != me.Id) { try { p.Kill(); } catch { } }
+                acquired = WaitForMutex(mutex, 3000);
             }
-            Application.EnableVisualStyles();
-            Application.Run(new TrayApp());
+            if (!acquired) return;
         }
+        Application.EnableVisualStyles();
+        Application.Run(new TrayApp());
+        try { mutex.ReleaseMutex(); } catch { }
+        GC.KeepAlive(mutex);
+    }
+
+    static bool WaitForMutex(Mutex m, int ms)
+    {
+        try { return m.WaitOne(ms); }
+        catch (AbandonedMutexException) { return true; }
     }
 }
 
@@ -49,37 +66,71 @@ class TrayApp : ApplicationContext
     readonly NotifyIcon tray;
     readonly HotkeyWindow hotkeyWindow;
     readonly ToolStripMenuItem autoStartItem;
+    readonly ToolStripMenuItem pauseItem;
+    readonly Icon activeIcon = MakeIcon(Color.FromArgb(47, 91, 211));
+    readonly Icon pausedIcon = MakeIcon(Color.FromArgb(150, 150, 150));
+    readonly EventWaitHandle quitEvent;
+    bool paused;
 
     public TrayApp()
     {
-        hotkeyWindow = new HotkeyWindow(OnHotkey);
-        bool ok = Native.RegisterHotKey(hotkeyWindow.Handle, HOTKEY_ID,
-            Native.MOD_CONTROL | Native.MOD_ALT | Native.MOD_NOREPEAT, (uint)Keys.Space);
+        hotkeyWindow = new HotkeyWindow(OnHotkey, delegate { ExitThread(); });
 
         var menu = new ContextMenuStrip();
         menu.RightToLeft = RightToLeft.Yes;
         var title = new ToolStripMenuItem("LayoutFix · Ctrl+Alt+Space");
         title.Enabled = false;
+        pauseItem = new ToolStripMenuItem();
+        pauseItem.Click += delegate { SetPaused(!paused); };
         autoStartItem = new ToolStripMenuItem("הפעלה אוטומטית עם Windows");
         autoStartItem.Checked = IsAutoStart();
         autoStartItem.Click += delegate { SetAutoStart(!autoStartItem.Checked); autoStartItem.Checked = IsAutoStart(); };
-        var exitItem = new ToolStripMenuItem("יציאה");
-        exitItem.Click += delegate { ExitThread(); };
         menu.Items.Add(title);
         menu.Items.Add(new ToolStripSeparator());
+        menu.Items.Add(pauseItem);
         menu.Items.Add(autoStartItem);
-        menu.Items.Add(exitItem);
 
         tray = new NotifyIcon();
-        tray.Icon = MakeIcon();
-        tray.Text = "LayoutFix – Ctrl+Alt+Space";
         tray.ContextMenuStrip = menu;
         tray.Visible = true;
 
-        // הודעה רק כשיש בעיה; הפעלה רגילה שקטה
-        if (!ok)
-            tray.ShowBalloonTip(6000, "LayoutFix",
-                "הקיצור Ctrl+Alt+Space תפוס על ידי תוכנה אחרת. סגרי אותה והפעילי שוב.", ToolTipIcon.Warning);
+        // אם ההפעלה האוטומטית מסומנת אבל מצביעה על קובץ אחר (גרסה קודמת), מעדכנים אותה לקובץ הזה
+        if (IsAutoStart() && !AutoStartPointsHere()) SetAutoStart(true);
+
+        // עותק חדש שמופעל מבקש מהעותק הזה להיסגר (למשל בעדכון גרסה)
+        quitEvent = new EventWaitHandle(false, EventResetMode.AutoReset, Program.QuitEventName);
+        var listener = new Thread(delegate ()
+        {
+            quitEvent.WaitOne();
+            Native.PostMessage(hotkeyWindow.Handle, HotkeyWindow.WM_APP_QUIT, IntPtr.Zero, IntPtr.Zero);
+        });
+        listener.IsBackground = true;
+        listener.Start();
+
+        SetPaused(false); // הפעלה רגילה שקטה; הודעה רק אם הקיצור תפוס
+    }
+
+    // השהיה: משחררים את הקיצור והסמל הופך לאפור. הפעלה: תופסים אותו שוב.
+    void SetPaused(bool pause)
+    {
+        if (pause)
+        {
+            Native.UnregisterHotKey(hotkeyWindow.Handle, HOTKEY_ID);
+            paused = true;
+        }
+        else
+        {
+            bool ok = Native.RegisterHotKey(hotkeyWindow.Handle, HOTKEY_ID,
+                Native.MOD_CONTROL | Native.MOD_ALT | Native.MOD_NOREPEAT, (uint)Keys.Space);
+            paused = !ok;
+            if (!ok)
+                tray.ShowBalloonTip(6000, "LayoutFix",
+                    "הקיצור Ctrl+Alt+Space תפוס כרגע על ידי תוכנה אחרת, ולכן LayoutFix מושהה. אפשר לנסות שוב מהתפריט: הפעלה.",
+                    ToolTipIcon.Warning);
+        }
+        tray.Icon = paused ? pausedIcon : activeIcon;
+        tray.Text = paused ? "LayoutFix – מושהה" : "LayoutFix – פעיל (Ctrl+Alt+Space)";
+        pauseItem.Text = paused ? "הפעלה" : "השהיה";
     }
 
     protected override void ExitThreadCore()
@@ -114,18 +165,39 @@ class TrayApp : ApplicationContext
 
         Native.SendCombo(Native.VK_CONTROL, (byte)'C');
         string text = WaitForClipboardText(400);
-        if (string.IsNullOrEmpty(text))
+
+        // VS Code ודומיו מעתיקים את כל השורה כשאין סימון — זה לא סימון אמיתי
+        if (text != null && text.EndsWith("\n")) text = null;
+
+        bool toHebrew;
+        string fixedText;
+        if (!string.IsNullOrEmpty(text))
         {
-            // אין סימון — מסמנים את המילה האחרונה
-            Native.SendCombo2(Native.VK_CONTROL, Native.VK_SHIFT, Native.VK_LEFT);
+            toHebrew = Converter.ShouldConvertToHebrew(text);
+            fixedText = Converter.Convert(text, toHebrew);
+        }
+        else
+        {
+            // אין סימון: מסמנים עד תחילת השורה (עובד גם בטקסט מימין לשמאל)
+            // ומחליפים את כל הקטע, כשרק המילה האחרונה מומרת
+            TryClipboard(delegate { Clipboard.Clear(); });
+            Native.SendCombo(Native.VK_SHIFT, Native.VK_HOME);
             Thread.Sleep(40);
             Native.SendCombo(Native.VK_CONTROL, (byte)'C');
-            text = WaitForClipboardText(400);
-        }
-        if (string.IsNullOrEmpty(text)) { RestoreClipboard(saved); return; }
+            string line = WaitForClipboardText(400);
+            if (string.IsNullOrEmpty(line)) { RestoreClipboard(saved); return; }
 
-        bool toHebrew = Converter.ShouldConvertToHebrew(text);
-        string fixedText = Converter.Convert(text, toHebrew);
+            string before, word, after;
+            Converter.SplitLastWord(line, out before, out word, out after);
+            if (!Converter.CanConvert(word))
+            {
+                Native.Tap(Native.VK_END); // מבטלים את הסימון
+                RestoreClipboard(saved);
+                return;
+            }
+            toHebrew = Converter.ShouldConvertToHebrew(word);
+            fixedText = before + Converter.Convert(word, toHebrew) + after;
+        }
         TryClipboard(delegate { Clipboard.SetText(fixedText); });
         Thread.Sleep(30);
         Native.SendCombo(Native.VK_CONTROL, (byte)'V');
@@ -228,6 +300,15 @@ class TrayApp : ApplicationContext
             return k != null && k.GetValue(RunName) != null;
     }
 
+    static bool AutoStartPointsHere()
+    {
+        using (var k = Registry.CurrentUser.OpenSubKey(RunKey))
+        {
+            string v = k == null ? null : k.GetValue(RunName) as string;
+            return v != null && string.Equals(v.Trim('"'), Application.ExecutablePath, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     static void SetAutoStart(bool on)
     {
         using (var k = Registry.CurrentUser.CreateSubKey(RunKey))
@@ -239,14 +320,14 @@ class TrayApp : ApplicationContext
 
     // ---------- tray icon: א/A keycap ----------
 
-    static Icon MakeIcon()
+    static Icon MakeIcon(Color background)
     {
         var bmp = new Bitmap(32, 32);
         using (var g = Graphics.FromImage(bmp))
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            using (var b = new SolidBrush(Color.FromArgb(47, 91, 211)))
+            using (var b = new SolidBrush(background))
                 g.FillRectangle(b, 1, 1, 30, 30);
             using (var f = new Font("Segoe UI", 13f, FontStyle.Bold, GraphicsUnit.Pixel))
             {
@@ -260,15 +341,20 @@ class TrayApp : ApplicationContext
 
 class HotkeyWindow : NativeWindow
 {
+    public const uint WM_APP_QUIT = 0x8001; // WM_APP + 1: בקשה מעותק חדש להיסגר
+
     readonly Action onHotkey;
-    public HotkeyWindow(Action onHotkey)
+    readonly Action onQuit;
+    public HotkeyWindow(Action onHotkey, Action onQuit)
     {
         this.onHotkey = onHotkey;
+        this.onQuit = onQuit;
         CreateHandle(new CreateParams());
     }
     protected override void WndProc(ref Message m)
     {
-        if (m.Msg == 0x0312) onHotkey(); // WM_HOTKEY
+        if (m.Msg == 0x0312) onHotkey();                 // WM_HOTKEY
+        else if (m.Msg == (int)WM_APP_QUIT) onQuit();
         base.WndProc(ref m);
     }
 }
@@ -276,7 +362,7 @@ class HotkeyWindow : NativeWindow
 static class Native
 {
     public const uint MOD_ALT = 0x1, MOD_CONTROL = 0x2, MOD_NOREPEAT = 0x4000;
-    public const byte VK_SHIFT = 0x10, VK_CONTROL = 0x11, VK_MENU = 0x12, VK_LEFT = 0x25, VK_LWIN = 0x5B, VK_RWIN = 0x5C;
+    public const byte VK_SHIFT = 0x10, VK_CONTROL = 0x11, VK_MENU = 0x12, VK_END = 0x23, VK_HOME = 0x24, VK_LWIN = 0x5B, VK_RWIN = 0x5C;
     public const uint WM_INPUTLANGCHANGEREQUEST = 0x50;
     const uint KEYUP = 0x2, EXTENDED = 0x1;
 
@@ -293,7 +379,7 @@ static class Native
 
     static void Key(byte vk, bool up)
     {
-        uint flags = (up ? KEYUP : 0) | (vk == VK_LEFT ? EXTENDED : 0);
+        uint flags = (up ? KEYUP : 0) | (vk == VK_HOME || vk == VK_END ? EXTENDED : 0);
         keybd_event(vk, 0, flags, UIntPtr.Zero);
     }
 
@@ -302,8 +388,8 @@ static class Native
         Key(mod, false); Key(key, false); Key(key, true); Key(mod, true);
     }
 
-    public static void SendCombo2(byte mod1, byte mod2, byte key)
+    public static void Tap(byte key)
     {
-        Key(mod1, false); Key(mod2, false); Key(key, false); Key(key, true); Key(mod2, true); Key(mod1, true);
+        Key(key, false); Key(key, true);
     }
 }
