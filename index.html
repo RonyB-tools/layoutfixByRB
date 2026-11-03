@@ -33,9 +33,9 @@
   --accent: #82a0f2; --muted: #9aa4b3; --line: #2b323d; --on-accent: #10141b; color-scheme: dark; }
 
 body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.6; }
-.page { max-width: 760px; margin: 0 auto; padding-block: 48px 64px;
+.page { max-width: 760px; margin: 0 auto; padding-block: 28px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: flex; flex-direction: column; gap: 56px; }
+  display: flex; flex-direction: column; gap: 30px; }
 h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
 h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.08; letter-spacing: -.01em; }
 h2 { font-size: 1.6rem; line-height: 1.2; }
@@ -52,10 +52,10 @@ code { font-family: var(--code); font-size: .82em; background: var(--cap); borde
   font-family: var(--body); font-weight: 700; font-size: .78em; line-height: 1; direction: ltr; vertical-align: .1em; color: var(--ink); }
 
 /* ---------- hero ---------- */
-.hero { display: flex; flex-direction: column; gap: 22px; }
+.hero { display: flex; flex-direction: column; gap: 14px; }
 .hero .lead { font-size: 1.2rem; color: var(--muted); max-width: 34em; }
 
-.demo { margin-top: 8px; display: flex; flex-direction: column; gap: 18px; }
+.demo { display: flex; flex-direction: column; gap: 10px; }
 .field { background: var(--cap); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px;
   font-size: 1.6rem; min-height: 2.2em; display: flex; align-items: center; gap: 2px; }
 .field .txt { font-family: var(--body); font-weight: 600; }
@@ -89,28 +89,28 @@ code { font-family: var(--code); font-size: .82em; background: var(--cap); borde
 .get .meta { color: var(--muted); font-size: .95rem; }
 
 /* ---------- sections ---------- */
-section { display: flex; flex-direction: column; gap: 20px; }
+section { display: flex; flex-direction: column; gap: 12px; }
 .rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
 
-ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 26px; counter-reset: s; }
+ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: s; }
 ol.steps > li { counter-increment: s; display: grid; grid-template-columns: 46px 1fr; gap: 4px 18px; }
 ol.steps > li::before { content: counter(s); grid-row: span 2; width: 42px; height: 42px; display: grid; place-items: center;
   background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 4px; border-radius: 8px;
   font-family: var(--display); font-size: 1.2rem; color: var(--ink); }
-ol.steps .body { min-width: 0; display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
+ol.steps .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; color: var(--ink); }
 .note { font-size: .95rem; color: var(--muted); border-inline-start: 2px solid var(--line); padding-inline-start: 14px; }
 
-dl.uses { margin: 0; display: grid; grid-template-columns: minmax(130px, 11em) 1fr; gap: 18px 28px; }
+dl.uses { margin: 0; display: grid; grid-template-columns: minmax(130px, 11em) 1fr; gap: 8px 28px; }
 dl.uses dt { font-family: var(--display); font-size: 1.05rem; line-height: 1.5; }
 dl.uses dd { margin: 0; min-width: 0; }
 
-.word { background: var(--cap); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.word { background: var(--cap); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; }
 .word h3 { color: var(--ink); }
 
 .terms { color: var(--muted); font-size: .95rem; }
 
 footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 24px;
-  color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); padding-top: 20px; }
+  color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); padding-top: 14px; }
 footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink); }
 
 /* ---------- the real tray icon, drawn as it looks in Windows ---------- */
@@ -125,7 +125,7 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
 .tray .clock { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: .78rem; font-weight: 400; }
 .tray .here { outline: 2px solid #ffd34d; outline-offset: 4px; border-radius: 3px; }
 
-.notes { display: flex; flex-direction: column; gap: 10px; }
+.notes { display: flex; flex-direction: column; gap: 6px; }
 
 /* ---------- in use: before / after examples ---------- */
 .uses-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -144,7 +144,7 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
 
 @media (max-width: 560px) {
   body { font-size: 17px; }
-  .page { gap: 44px; padding-block: 32px 48px; }
+  .page { gap: 24px; padding-block: 20px 32px; }
   .cap { width: 48px; height: 50px; }
   .board .group { width: 100%; }
   .cap.space { min-width: 0; flex: 1; }
@@ -152,7 +152,7 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
   .cap.mod { min-width: 58px; font-size: .85rem; }
   .uses-grid { grid-template-columns: 1fr; }
   dl.uses { grid-template-columns: 1fr; gap: 4px; }
-  dl.uses dd { margin-bottom: 14px; }
+  dl.uses dd { margin-bottom: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .field .caret { animation: none; }
@@ -223,8 +223,6 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
     </ol>
   </section>
 
-  <hr class="rule">
-
   <section>
     <h2>בשימוש</h2>
     <dl class="uses">
@@ -241,8 +239,6 @@ footer .sig { font-family: var(--display); font-size: 1.05rem; color: var(--ink)
       <p>יש לקחת בחשבון שב-Word הצירוף <span class="key">Ctrl</span> <span class="key">Alt</span> <span class="key">Space</span> מפעיל <b>הקראה בקול</b>.<br>כש-LayoutFix פעיל, הצירוף ממיר טקסט ולא מקריא.<br>כדי להקריא בקול, משהים את LayoutFix, או בוחרים ב-Word: <b>סקירה ← הקראה בקול</b>.</p>
     </div>
   </section>
-
-  <hr class="rule">
 
   <section class="terms">
     <h2 style="font-size:1.15rem;color:var(--ink)">תנאי שימוש</h2>
