@@ -16,8 +16,8 @@ using System.Reflection;
 [assembly: AssemblyDescription("Fixes text typed in the wrong keyboard layout (Hebrew/English). Ctrl+Alt+Space.")]
 [assembly: AssemblyCompany("RonyB")]
 [assembly: AssemblyCopyright("Created By RonyB with Claude C.")]
-[assembly: AssemblyVersion("2.2.0.0")]
-[assembly: AssemblyFileVersion("2.2.0.0")]
+[assembly: AssemblyVersion("2.2.1.0")]
+[assembly: AssemblyFileVersion("2.2.1.0")]
 
 static class Program
 {
