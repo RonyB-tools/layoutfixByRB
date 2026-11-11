@@ -234,6 +234,15 @@ class TrayApp : ApplicationContext
         return null;
     }
 
+    // רק פורמטים שנשמרים כעותק מנוהל מלא. פורמטים אחרים (OLE, Embed Source,
+    // EnhancedMetafile וכו') הם מצביעים לזיכרון של התוכנה המקורית, והחזרתם
+    // ל-OleFlushClipboard גרמה לקריסת Access Violation שאי אפשר לתפוס.
+    static readonly string[] SafeFormats =
+    {
+        DataFormats.UnicodeText, DataFormats.Text, DataFormats.Rtf,
+        DataFormats.Html, DataFormats.FileDrop, DataFormats.Bitmap
+    };
+
     static IDataObject SnapshotClipboard()
     {
         var copy = new DataObject();
@@ -242,12 +251,18 @@ class TrayApp : ApplicationContext
         {
             IDataObject cur = Clipboard.GetDataObject();
             if (cur == null) return;
-            foreach (string f in cur.GetFormats(false))
+            foreach (string f in SafeFormats)
             {
                 try
                 {
+                    if (!cur.GetDataPresent(f, false)) continue;
                     object d = cur.GetData(f, false);
-                    if (d != null) { copy.SetData(f, false, d); any = true; }
+                    if (d is string || d is string[] || d is System.Drawing.Bitmap)
+                    {
+                        if (d is System.Drawing.Bitmap) d = new System.Drawing.Bitmap((System.Drawing.Bitmap)d);
+                        copy.SetData(f, false, d);
+                        any = true;
+                    }
                 }
                 catch { }
             }
@@ -270,6 +285,7 @@ class TrayApp : ApplicationContext
         {
             try { action(); return; }
             catch (ExternalException) { Thread.Sleep(30); }
+            catch (Exception) { return; }
         }
     }
 
