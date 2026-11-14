@@ -16,8 +16,8 @@ using System.Reflection;
 [assembly: AssemblyDescription("Fixes text typed in the wrong keyboard layout (Hebrew/English). Ctrl+Alt+Space.")]
 [assembly: AssemblyCompany("RonyB")]
 [assembly: AssemblyCopyright("Created By RonyB with Claude C.")]
-[assembly: AssemblyVersion("2.2.1.0")]
-[assembly: AssemblyFileVersion("2.2.1.0")]
+[assembly: AssemblyVersion("2.2.2.0")]
+[assembly: AssemblyFileVersion("2.2.2.0")]
 
 static class Program
 {
@@ -44,6 +44,9 @@ static class Program
             }
             if (!acquired) return;
         }
+        // בכיבוי המחשב נסגרים אחרונים: אם תוכנה אחרת (Word עם מסמך לא שמור וכו')
+        // עוצרת את הכיבוי והוא מבוטל, LayoutFix עוד לא נסגר וממשיך לפעול
+        try { Native.SetProcessShutdownParameters(0x100, 0); } catch { }
         Application.EnableVisualStyles();
         Application.Run(new TrayApp());
         try { mutex.ReleaseMutex(); } catch { }
@@ -377,6 +380,8 @@ class HotkeyWindow : NativeWindow
 
 static class Native
 {
+    [DllImport("kernel32.dll")] public static extern bool SetProcessShutdownParameters(uint level, uint flags);
+
     public const uint MOD_ALT = 0x1, MOD_CONTROL = 0x2, MOD_NOREPEAT = 0x4000;
     public const byte VK_SHIFT = 0x10, VK_CONTROL = 0x11, VK_MENU = 0x12, VK_END = 0x23, VK_HOME = 0x24, VK_LWIN = 0x5B, VK_RWIN = 0x5C;
     public const uint WM_INPUTLANGCHANGEREQUEST = 0x50;
